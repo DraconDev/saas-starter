@@ -28,38 +28,38 @@ export const teams = sqliteTable('teams', {
   subscriptionStatus: text('subscription_status'),
 });
 
-  planName: varchar("plan_name", { length: 50 }),
-  subscriptionStatus: varchar("subscription_status", { length: 20 }),
-});
-
-export const teamMembers = pgTable("team_members", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id")
+export const teamMembers = sqliteTable('team_members', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: integer('user_id')
     .notNull()
     .references(() => users.id),
-  teamId: integer("team_id")
+  teamId: integer('team_id')
     .notNull()
     .references(() => teams.id),
-  role: varchar("role", { length: 50 }).notNull(),
-  joinedAt: timestamp("joined_at").notNull().defaultNow(),
+  role: text('role').notNull(),
+  joinedAt: integer('joined_at').notNull().default(sql`(unixepoch())`),
 });
 
-export const activityLogs = pgTable("activity_logs", {
-  id: serial("id").primaryKey(),
-  teamId: integer("team_id")
+export const activityLogs = sqliteTable('activity_logs', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  teamId: integer('team_id')
     .notNull()
     .references(() => teams.id),
-  userId: integer("user_id").references(() => users.id),
-  action: text("action").notNull(),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
-  ipAddress: varchar("ip_address", { length: 45 }),
+  userId: integer('user_id').references(() => users.id),
+  action: text('action').notNull(),
+  timestamp: integer('timestamp').notNull().default(sql`(unixepoch())`),
+  ipAddress: text('ip_address'),
 });
 
-export const invitations = pgTable("invitations", {
-  id: serial("id").primaryKey(),
-  teamId: integer("team_id")
+export const invitations = sqliteTable('invitations', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  teamId: integer('team_id')
     .notNull()
     .references(() => teams.id),
+  email: text('email').notNull(),
+  role: text('role').notNull(),
+  invitedBy: integer('invited_by')
+    .notNull()
   email: varchar("email", { length: 255 }).notNull(),
   role: varchar("role", { length: 50 }).notNull(),
   invitedBy: integer("invited_by")
