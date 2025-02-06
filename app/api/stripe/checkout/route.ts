@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    const session =  stripe.checkout.sessions.retrieve(sessionId, {
       expand: ['customer', 'subscription'],
     });
 
