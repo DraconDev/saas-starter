@@ -1,22 +1,22 @@
 import {
-  pgTable,
-  serial,
-  varchar,
+  sqliteTable,
   text,
-  timestamp,
   integer,
-  unique,
-} from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+} from 'drizzle-orm/sqlite-core';
+import { relations, sql } from 'drizzle-orm';
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 100 }),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
-  role: varchar("role", { length: 20 }).notNull().default("member"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name'),
+  email: text('email').notNull().unique(),
+  passwordHash: text('password_hash').notNull(),
+  role: text('role').notNull().default('member'),
+  createdAt: integer('created_at').notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at').notNull().default(sql`(unixepoch())`),
+  deletedAt: integer('deleted_at'),
+});
+
+export const teams = sqliteTable('teams', {
   deletedAt: timestamp("deleted_at"),
 });
 
