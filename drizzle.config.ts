@@ -5,7 +5,7 @@ dotenv.config();
 export default {
   schema: './lib/db/schema.ts',
   out: './lib/db/migrations',
-  driver: 'turso',
+  driver: 'libsql',
   dbCredentials: {
     url: process.env.DATABASE_URL!,
     authToken: process.env.DATABASE_AUTH_TOKEN!,
