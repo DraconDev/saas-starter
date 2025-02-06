@@ -1,6 +1,6 @@
-# Next.js SaaS Starter
+# Next.js SaaS Starter with Turso and Bun
 
-This is a starter template for building a SaaS application using **Next.js** with support for authentication, Stripe integration for payments, and a dashboard for logged-in users.
+This is a starter template for building a SaaS application using **Next.js** with support for authentication, Stripe integration for payments, and a dashboard for logged-in users. It uses Turso SQLite for edge-ready database capabilities and Bun as the JavaScript runtime and package manager.
 
 **Demo: [https://next-saas-start.vercel.app/](https://next-saas-start.vercel.app/)**
 
@@ -15,36 +15,51 @@ This is a starter template for building a SaaS application using **Next.js** wit
 - Global middleware to protect logged-in routes
 - Local middleware to protect Server Actions or validate Zod schemas
 - Activity logging system for any user events
+- Edge-ready database with Turso SQLite
+- Fast development with Bun runtime
 
 ## Tech Stack
 
 - **Framework**: [Next.js](https://nextjs.org/)
-- **Database**: [Postgres](https://www.postgresql.org/)
+- **Database**: [Turso SQLite](https://turso.tech/)
 - **ORM**: [Drizzle](https://orm.drizzle.team/)
 - **Payments**: [Stripe](https://stripe.com/)
 - **UI Library**: [shadcn/ui](https://ui.shadcn.com/)
+- **Runtime**: [Bun](https://bun.sh/)
 
 ## Getting Started
 
 ```bash
-git clone https://github.com/nextjs/saas-starter
-cd saas-starter
-pnpm install
+git clone https://github.com/DraconDev/saas-starter-turso-bun-version
+cd saas-starter-turso-bun-version
+bun install
 ```
 
 ## Running Locally
 
+First, make sure you have Bun installed on your system:
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
 Use the included setup script to create your `.env` file:
 
 ```bash
-pnpm db:setup
+bun db:setup
 ```
+
+This will guide you through:
+1. Setting up Stripe CLI
+2. Creating a Turso database and getting credentials
+3. Setting up Stripe webhooks
+4. Configuring authentication
 
 Then, run the database migrations and seed the database with a default user and team:
 
 ```bash
-pnpm db:migrate
-pnpm db:seed
+bun db:generate
+bun db:migrate
+bun db:seed
 ```
 
 This will create the following user and team:
@@ -57,7 +72,7 @@ You can, of course, create new users as well through `/sign-up`.
 Finally, run the Next.js development server:
 
 ```bash
-pnpm dev
+bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to see the app in action.
@@ -86,6 +101,12 @@ When you're ready to deploy your SaaS application to production, follow these st
 2. Set the endpoint URL to your production API route (e.g., `https://yourdomain.com/api/stripe/webhook`).
 3. Select the events you want to listen for (e.g., `checkout.session.completed`, `customer.subscription.updated`).
 
+### Set up a production Turso database
+
+1. Create a new Turso database for production
+2. Get your production database URL and auth token
+3. Push your schema using Drizzle Kit
+
 ### Deploy to Vercel
 
 1. Push your code to a GitHub repository.
@@ -99,13 +120,10 @@ In your Vercel project settings (or during deployment), add all the necessary en
 1. `BASE_URL`: Set this to your production domain.
 2. `STRIPE_SECRET_KEY`: Use your Stripe secret key for the production environment.
 3. `STRIPE_WEBHOOK_SECRET`: Use the webhook secret from the production webhook you created in step 1.
-4. `POSTGRES_URL`: Set this to your production database URL.
-5. `AUTH_SECRET`: Set this to a random string. `openssl rand -base64 32` will generate one.
+4. `DATABASE_URL`: Set this to your production Turso database URL.
+5. `DATABASE_AUTH_TOKEN`: Set this to your production Turso auth token.
+6. `AUTH_SECRET`: Set this to a random string. `openssl rand -base64 32` will generate one.
 
-## Other Templates
+## Contributing
 
-While this template is intentionally minimal and to be used as a learning resource, there are other paid versions in the community which are more full-featured:
-
-- https://achromatic.dev
-- https://shipfa.st
-- https://makerkit.dev
+Feel free to contribute to this project by opening issues or submitting pull requests. All contributions are welcome!
