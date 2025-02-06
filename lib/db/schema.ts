@@ -60,13 +60,9 @@ export const invitations = sqliteTable('invitations', {
   role: text('role').notNull(),
   invitedBy: integer('invited_by')
     .notNull()
-  email: varchar("email", { length: 255 }).notNull(),
-  role: varchar("role", { length: 50 }).notNull(),
-  invitedBy: integer("invited_by")
-    .notNull()
     .references(() => users.id),
-  invitedAt: timestamp("invited_at").notNull().defaultNow(),
-  status: varchar("status", { length: 20 }).notNull().default("pending"),
+  invitedAt: integer('invited_at').notNull().default(sql`(unixepoch())`),
+  status: text('status').notNull().default('pending'),
 });
 
 export const teamsRelations = relations(teams, ({ many }) => ({
@@ -125,19 +121,19 @@ export type Invitation = typeof invitations.$inferSelect;
 export type NewInvitation = typeof invitations.$inferInsert;
 export type TeamDataWithMembers = Team & {
   teamMembers: (TeamMember & {
-    user: Pick<User, "id" | "name" | "email">;
+    user: Pick<User, 'id' | 'name' | 'email'>;
   })[];
 };
 
 export enum ActivityType {
-  SIGN_UP = "SIGN_UP",
-  SIGN_IN = "SIGN_IN",
-  SIGN_OUT = "SIGN_OUT",
-  UPDATE_PASSWORD = "UPDATE_PASSWORD",
-  DELETE_ACCOUNT = "DELETE_ACCOUNT",
-  UPDATE_ACCOUNT = "UPDATE_ACCOUNT",
-  CREATE_TEAM = "CREATE_TEAM",
-  REMOVE_TEAM_MEMBER = "REMOVE_TEAM_MEMBER",
-  INVITE_TEAM_MEMBER = "INVITE_TEAM_MEMBER",
-  ACCEPT_INVITATION = "ACCEPT_INVITATION",
+  SIGN_UP = 'SIGN_UP',
+  SIGN_IN = 'SIGN_IN',
+  SIGN_OUT = 'SIGN_OUT',
+  UPDATE_PASSWORD = 'UPDATE_PASSWORD',
+  DELETE_ACCOUNT = 'DELETE_ACCOUNT',
+  UPDATE_ACCOUNT = 'UPDATE_ACCOUNT',
+  CREATE_TEAM = 'CREATE_TEAM',
+  REMOVE_TEAM_MEMBER = 'REMOVE_TEAM_MEMBER',
+  INVITE_TEAM_MEMBER = 'INVITE_TEAM_MEMBER',
+  ACCEPT_INVITATION = 'ACCEPT_INVITATION',
 }
