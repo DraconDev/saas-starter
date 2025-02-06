@@ -1,11 +1,11 @@
 import {
-  pgTable,
-  serial,
-  varchar,
+  sqliteTable,
   text,
-  timestamp,
   integer,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/sqlite-core';
+import { relations } from 'drizzle-orm';
+
+export const users = sqliteTable('users', {
 import { relations } from 'drizzle-orm';
 
 export const users = pgTable('users', {
