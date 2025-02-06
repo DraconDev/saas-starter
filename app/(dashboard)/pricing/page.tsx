@@ -13,7 +13,7 @@ export default async function PricingPage() {
   ]);
 
   const basePlan = products.find((product) => product.name === "monthly 2");
-  const plusPlan = products.find((product) => product.name === "monthly 3");
+  const plusPlan = products.find((product) => product.name === "monthly 1");
 
   const basePrice = prices.find((price) => price.productId === basePlan?.id);
   const plusPrice = prices.find((price) => price.productId === plusPlan?.id);
