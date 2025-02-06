@@ -1,14 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "db:setup": "npx tsx lib/db/setup.ts",
-    "db:seed": "npx tsx lib/db/seed.ts",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "dev": "bun --bun next dev",
+    "build": "bun --bun next build",
+    "start": "bun --bun next start",
+    "db:setup": "bun lib/db/setup.ts",
+    "db:seed": "bun lib/db/seed.ts",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bunx drizzle-kit push",
+    "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
     "@libsql/client": "^0.14.0",
@@ -36,7 +36,6 @@
     "lucide-react": "^0.474.0",
     "next": "15.2.0-canary.33",
     "postcss": "^8.5.1",
-    "postgres": "^3.4.5",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "server-only": "^0.0.1",
