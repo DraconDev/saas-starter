@@ -165,6 +165,7 @@ export async function getStripeProducts() {
   const products = await stripe.products.list({
     active: true,
     expand: ["data.default_price"],
+    limit: 20,
   });
 
   return products.data.map((product) => ({
