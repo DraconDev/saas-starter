@@ -7,12 +7,12 @@ export function Terminal() {
   const [terminalStep, setTerminalStep] = useState(0);
   const [copied, setCopied] = useState(false);
   const terminalSteps = [
-    'git clone https://github.com/nextjs/saas-starter',
-    'pnpm install',
-    'pnpm db:setup',
-    'pnpm db:migrate',
-    'pnpm db:seed',
-    'pnpm dev 🎉',
+    'git clone https://github.com/DraconDev/saas-starter-turso-bun-version',
+    'bun install',
+    'bun db:setup',
+    'bun db:generate',
+    'bun db:migrate',
+    'bun dev 🎉',
   ];
 
   useEffect(() => {
