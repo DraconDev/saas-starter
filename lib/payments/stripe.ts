@@ -134,10 +134,17 @@ export async function handleSubscriptionChange(
 
   if (status === "active" || status === "trialing") {
     const plan = subscription.items.data[0]?.plan;
+    if (!plan?.product) {
+      console.error("No product found in subscription plan");
+      return;
+    }
+    const productId = plan.product as string;
+    const product = await stripe.products.retrieve(productId);
+    
     await updateTeamSubscription(team.id, {
       stripeSubscriptionId: subscriptionId,
-      stripeProductId: plan?.product as string,
-      planName: (plan?.product as Stripe.Product).name,
+      stripeProductId: productId,
+      planName: product.name,
       subscriptionStatus: status,
     });
   } else if (status === "canceled" || status === "unpaid") {

@@ -6,13 +6,13 @@ import { hashPassword } from '@/lib/auth/session';
 async function createStripeProducts() {
   console.log('Creating Stripe products and prices...');
 
-  const baseProduct = await stripe.products.create({
-    name: 'Base',
-    description: 'Base subscription plan',
+  const monthly1Product = await stripe.products.create({
+    name: 'Monthly 1',
+    description: 'Monthly subscription plan 1',
   });
 
   await stripe.prices.create({
-    product: baseProduct.id,
+    product: monthly1Product.id,
     unit_amount: 800, // $8 in cents
     currency: 'usd',
     recurring: {
@@ -21,13 +21,13 @@ async function createStripeProducts() {
     },
   });
 
-  const plusProduct = await stripe.products.create({
-    name: 'Plus',
-    description: 'Plus subscription plan',
+  const monthly2Product = await stripe.products.create({
+    name: 'Monthly 2',
+    description: 'Monthly subscription plan 2',
   });
 
   await stripe.prices.create({
-    product: plusProduct.id,
+    product: monthly2Product.id,
     unit_amount: 1200, // $12 in cents
     currency: 'usd',
     recurring: {
