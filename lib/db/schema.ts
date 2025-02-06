@@ -17,17 +17,17 @@ export const users = sqliteTable('users', {
 });
 
 export const teams = sqliteTable('teams', {
-  deletedAt: timestamp("deleted_at"),
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  createdAt: integer('created_at').notNull().default(sql`(unixepoch())`),
+  updatedAt: integer('updated_at').notNull().default(sql`(unixepoch())`),
+  stripeCustomerId: text('stripe_customer_id').unique(),
+  stripeSubscriptionId: text('stripe_subscription_id').unique(),
+  stripeProductId: text('stripe_product_id'),
+  planName: text('plan_name'),
+  subscriptionStatus: text('subscription_status'),
 });
 
-export const teams = pgTable("teams", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 100 }).notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-  stripeCustomerId: text("stripe_customer_id").unique(),
-  stripeSubscriptionId: text("stripe_subscription_id").unique(),
-  stripeProductId: text("stripe_product_id"),
   planName: varchar("plan_name", { length: 50 }),
   subscriptionStatus: varchar("subscription_status", { length: 20 }),
 });
