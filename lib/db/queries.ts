@@ -59,7 +59,7 @@ export async function updateTeamSubscription(
     .update(teams)
     .set({
       ...subscriptionData,
-      updatedAt: new Date(),
+      updatedAt: Math.floor(Date.now() / 1000),
     })
     .where(eq(teams.id, teamId));
 }
