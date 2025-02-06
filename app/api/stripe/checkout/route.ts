@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
   const sessionId = searchParams.get('session_id');
 
   if (!sessionId) {
+    return NextResponse.redirect(new URL('/pricing', request.url));
   }
 
   try {
@@ -84,7 +85,7 @@ export async function GET(request: NextRequest) {
         stripeProductId: productId,
         planName: (plan.product as Stripe.Product).name,
         subscriptionStatus: subscription.status,
-        updatedAt: new Date(),
+        updatedAt: sql`(unixepoch())`,
       })
       .where(eq(teams.id, userTeam[0].teamId));
 
