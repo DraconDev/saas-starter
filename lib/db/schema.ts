@@ -1,4 +1,4 @@
-import {
+libsql://next-saas-starter-dracondev.turso.ioimport {
   pgTable,
   serial,
   varchar,
