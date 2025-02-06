@@ -77,57 +77,57 @@ async function checkStripeCLI() {
   }
 }
 
-async function getPostgresURL(): Promise<string> {
-  console.log('Step 2: Setting up Postgres');
-  const dbChoice = await question(
-    'Do you want to use a local Postgres instance with Docker (L) or a remote Postgres instance (R)? (L/R): '
-  );
+async function getTursoDatabaseInfo() {
+  console.log('Step 2: Setting up Turso Database');
+  console.log('You can create a database at: https://turso.tech/');
+  
+  const dbUrl = await question('Enter your Turso database URL (libsql://...): ');
+  const authToken = await question('Enter your Turso database auth token: ');
+  
+  return { dbUrl, authToken };
+}
 
-  if (dbChoice.toLowerCase() === 'l') {
-    console.log('Setting up local Postgres instance with Docker...');
-    await setupLocalPostgres();
-    return 'postgres://postgres:postgres@localhost:54322/postgres';
-  } else {
-    console.log(
-      'You can find Postgres databases at: https://vercel.com/marketplace?category=databases'
+async function getStripeSecretKey(): Promise<string> {
+  console.log('Step 3: Getting Stripe Secret Key');
+  console.log(
+    'You can find your Stripe Secret Key at: https://dashboard.stripe.com/test/apikeys'
+  );
+  return await question('Enter your Stripe Secret Key: ');
+}
+
+async function createStripeWebhook(): Promise<string> {
+  console.log('Step 4: Creating Stripe webhook...');
+  try {
+    const { stdout } = await execAsync('stripe listen --print-secret');
+    const match = stdout.match(/whsec_[a-zA-Z0-9]+/);
+    if (!match) {
+      throw new Error('Failed to extract Stripe webhook secret');
+    }
+    console.log('Stripe webhook created.');
+    return match[0];
+  } catch (error) {
+    console.error(
+      'Failed to create Stripe webhook. Check your Stripe CLI installation and permissions.'
     );
-    return await question('Enter your POSTGRES_URL: ');
+    if (os.platform() === 'win32') {
+      console.log(
+        'Note: On Windows, you may need to run this script as an administrator.'
+      );
+    }
+    throw error;
   }
 }
 
-async function setupLocalPostgres() {
-  console.log('Checking if Docker is installed...');
-  try {
-    await execAsync('docker --version');
-    console.log('Docker is installed.');
-  } catch (error) {
-    console.error(
-      'Docker is not installed. Please install Docker and try again.'
-    );
-    console.log(
-      'To install Docker, visit: https://docs.docker.com/get-docker/'
-    );
-    process.exit(1);
-  }
+function generateAuthSecret(): string {
+  console.log('Step 5: Generating AUTH_SECRET...');
+  return crypto.randomBytes(32).toString('hex');
+}
 
-  console.log('Creating docker-compose.yml file...');
-  const dockerComposeContent = `
-services:
-  postgres:
-    image: postgres:16.4-alpine
-    container_name: next_saas_starter_postgres
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "54322:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
-`;
+async function writeEnvFile(envVars: Record<string, string>) {
+  console.log('Step 6: Writing environment variables to .env');
+  const envContent = Object.entries(envVars)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('\n');
 
   await fs.writeFile(
     path.join(process.cwd(), 'docker-compose.yml'),
