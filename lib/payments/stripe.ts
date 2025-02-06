@@ -80,8 +80,8 @@ export async function createCustomerPortalSession(team: Team) {
         },
         subscription_update: {
           enabled: true,
-          default_allowed_updates: ["price", "promotion_code"],
-          proration_behavior: "create_prorations",
+          default_allowed_updates: ["price"],
+          proration_behavior: "always_invoice",
           products: [
             {
               product: product.id,
