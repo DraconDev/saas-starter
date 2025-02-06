@@ -105,8 +105,8 @@ export async function createCustomerPortalSession(team: Team) {
         },
         customer_update: {
           enabled: true,
-          allowed_updates: ["email", "name"]
-        }
+          allowed_updates: ["email", "name"],
+        },
       },
     });
   }
