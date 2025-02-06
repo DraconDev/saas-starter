@@ -66,11 +66,11 @@ export default function HomePage() {
               </div>
               <div className="mt-5">
                 <h2 className="text-lg font-medium text-gray-900">
-                  Postgres and Drizzle ORM
+                  Turso SQLite and Drizzle ORM
                 </h2>
                 <p className="mt-2 text-base text-gray-500">
-                  Robust database solution with an intuitive ORM for efficient
-                  data management and scalability.
+                  Edge-ready database solution with Turso SQLite and intuitive Drizzle ORM for
+                  efficient global data access and scalability.
                 </p>
               </div>
             </div>
