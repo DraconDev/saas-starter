@@ -38,6 +38,7 @@ bun install
 ## Running Locally
 
 First, make sure you have Bun installed on your system:
+
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
@@ -49,6 +50,7 @@ bun db:setup
 ```
 
 This will guide you through:
+
 1. Setting up Stripe CLI
 2. Creating a Turso database and getting credentials
 3. Setting up Stripe webhooks
