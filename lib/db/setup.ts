@@ -129,66 +129,6 @@ async function writeEnvFile(envVars: Record<string, string>) {
     .map(([key, value]) => `${key}=${value}`)
     .join('\n');
 
-  await fs.writeFile(
-    path.join(process.cwd(), 'docker-compose.yml'),
-    dockerComposeContent
-  );
-  console.log('docker-compose.yml file created.');
-
-  console.log('Starting Docker container with `docker compose up -d`...');
-  try {
-    await execAsync('docker compose up -d');
-    console.log('Docker container started successfully.');
-  } catch (error) {
-    console.error(
-      'Failed to start Docker container. Please check your Docker installation and try again.'
-    );
-    process.exit(1);
-  }
-}
-
-async function getStripeSecretKey(): Promise<string> {
-  console.log('Step 3: Getting Stripe Secret Key');
-  console.log(
-    'You can find your Stripe Secret Key at: https://dashboard.stripe.com/test/apikeys'
-  );
-  return await question('Enter your Stripe Secret Key: ');
-}
-
-async function createStripeWebhook(): Promise<string> {
-  console.log('Step 4: Creating Stripe webhook...');
-  try {
-    const { stdout } = await execAsync('stripe listen --print-secret');
-    const match = stdout.match(/whsec_[a-zA-Z0-9]+/);
-    if (!match) {
-      throw new Error('Failed to extract Stripe webhook secret');
-    }
-    console.log('Stripe webhook created.');
-    return match[0];
-  } catch (error) {
-    console.error(
-      'Failed to create Stripe webhook. Check your Stripe CLI installation and permissions.'
-    );
-    if (os.platform() === 'win32') {
-      console.log(
-        'Note: On Windows, you may need to run this script as an administrator.'
-      );
-    }
-    throw error;
-  }
-}
-
-function generateAuthSecret(): string {
-  console.log('Step 5: Generating AUTH_SECRET...');
-  return crypto.randomBytes(32).toString('hex');
-}
-
-async function writeEnvFile(envVars: Record<string, string>) {
-  console.log('Step 6: Writing environment variables to .env');
-  const envContent = Object.entries(envVars)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('\n');
-
   await fs.writeFile(path.join(process.cwd(), '.env'), envContent);
   console.log('.env file created with the necessary variables.');
 }
@@ -196,14 +136,15 @@ async function writeEnvFile(envVars: Record<string, string>) {
 async function main() {
   await checkStripeCLI();
 
-  const POSTGRES_URL = await getPostgresURL();
+  const { dbUrl, authToken } = await getTursoDatabaseInfo();
   const STRIPE_SECRET_KEY = await getStripeSecretKey();
   const STRIPE_WEBHOOK_SECRET = await createStripeWebhook();
   const BASE_URL = 'http://localhost:3000';
   const AUTH_SECRET = generateAuthSecret();
 
   await writeEnvFile({
-    POSTGRES_URL,
+    DATABASE_URL: dbUrl,
+    DATABASE_AUTH_TOKEN: authToken,
     STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET,
     BASE_URL,
@@ -211,6 +152,9 @@ async function main() {
   });
 
   console.log('🎉 Setup completed successfully!');
+  console.log('To run migrations:');
+  console.log('1. First generate migrations: bun drizzle-kit generate');
+  console.log('2. Push migrations to database: bun drizzle-kit push:sqlite');
 }
 
 main().catch(console.error);
